@@ -1,0 +1,2 @@
+#include common.sources
+System.IO/FileSystemWatcher_mobile.cs

@@ -1,0 +1,19 @@
+set(EnhanceEffectSource EnhanceEffect.cpp include/EnhanceEffect.h)
+
+add_library(EnhanceEffect11Static STATIC ${EnhanceEffectSource})
+add_library(EnhanceEffect12Static STATIC ${EnhanceEffectSource})
+add_library(EnhanceEffect11 SHARED ${EnhanceEffectSource})
+add_library(EnhanceEffect12 SHARED ${EnhanceEffectSource})
+
+add_target_dependencies(EnhanceEffect11 AOFX GeometryFX TressFX DepthOfFieldFX ShadowFX11)
+add_target_dependencies(EnhanceEffect12 AOFX GeometryFX TressFX DepthOfFieldFX ShadowFX12)
+add_target_dependencies(EnhanceEffect11Static AOFX GeometryFX TressFX DepthOfFieldFX ShadowFX11)
+add_target_dependencies(EnhanceEffect12Static AOFX GeometryFX TressFX DepthOfFieldFX ShadowFX12)
+
+mark_as_extra(EnhanceEffect11Static)
+mark_as_extra(EnhanceEffect12Static)
+mark_as_extra(EnhanceEffect11)
+mark_as_extra(EnhanceEffect12)
+
+target_compile_definitions(EnhanceEffect12 PRIVATE AMD_SHADOWFX_D3D12)
+target_compile_definitions(EnhanceEffect12Static PRIVATE AMD_SHADOWFX_D3D12)

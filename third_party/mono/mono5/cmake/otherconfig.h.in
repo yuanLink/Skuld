@@ -1,0 +1,217 @@
+
+
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#define LT_OBJDIR ".libs/"
+
+/* Define to 1 if `major', `minor', and `makedev' are declared in <mkdev.h>.
+   */
+/* #undef MAJOR_IN_MKDEV */
+
+/* Define to 1 if `major', `minor', and `makedev' are declared in
+   <sysmacros.h>. */
+/* #undef MAJOR_IN_SYSMACROS */
+
+/* Define if Unix sockets cannot be created in an anonymous namespace */
+/* #undef NEED_LINK_UNLINK */
+
+/* Enable cooperative stop-the-world garbage collection. */
+/* #undef USE_COOP_GC */
+
+/* Use kqueue for the threadpool */
+/* #undef USE_KQUEUE_FOR_THREADPOOL */
+
+/* Use malloc for each single mempool allocation */
+/* #undef USE_MALLOC_FOR_MEMPOOLS */
+
+/* 64 bit mode with 4 byte longs and pointers */
+/* #undef __mono_ilp32__ */
+
+/* ... */
+/* #undef __mono_ppc64__ */
+
+/* ... */
+/* #undef __native_client_codegen__ */
+
+/* Have IP_DONTFRAG */
+/* #undef HAVE_IP_DONTFRAG */
+
+/* Have IP_DONTFRAGMENT */
+/* #undef HAVE_IP_DONTFRAGMENT */
+
+/* Have IP_MTU_DISCOVER */
+#define HAVE_IP_MTU_DISCOVER 1
+
+/* Have IP_PKTINFO */
+#define HAVE_IP_PKTINFO 1
+
+/* Have IP_PMTUDISC_DO */
+#define HAVE_IP_PMTUDISC_DO 1
+
+/* Have __thread keyword */
+/* #undef HAVE_KW_THREAD */
+
+/* Define if you have the iconv() function and it works. */
+#define HAVE_ICONV 1
+
+/* Have if_nametoindex */
+#define HAVE_IF_NAMETOINDEX 1
+
+/* Have IPPROTO_IP */
+#define HAVE_IPPROTO_IP 1
+
+/* Have IPPROTO_IPV6 */
+#define HAVE_IPPROTO_IPV6 1
+
+/* Have IPPROTO_TCP */
+#define HAVE_IPPROTO_TCP 1
+
+/* Have IPV6_PKTINFO */
+#define HAVE_IPV6_PKTINFO 1
+
+/* Enable the LLVM back end */
+/* #undef ENABLE_LLVM */
+
+/* Runtime support code for llvm enabled */
+/* #undef ENABLE_LLVM_RUNTIME */
+
+/* Define to 1 if you have the `accept4' function. */
+#define HAVE_ACCEPT4 1
+
+/* Has the 'aintl' function */
+/* #undef HAVE_AINTL */
+
+/* Defaults to concurrent GC */
+#define HAVE_CONC_GC_AS_DEFAULT 1
+
+/* Have /dev/random */
+#define HAVE_CRYPT_RNG 1
+
+/* Support for the deprecated attribute */
+/* #undef HAVE_DEPRECATED */
+
+/* dlopen-based dynamic loader available */
+#define HAVE_DL_LOADER 1
+
+/* Define to 1 if you have the `unwind' library (-lunwind). */
+/* #undef HAVE_LIBUNWIND */
+
+/* No GC support. */
+/* #undef HAVE_NULL_GC */
+
+/* Have signbit */
+#define HAVE_SIGNBIT 1
+
+/* sockaddr_in6 has sin6_len */
+/* #undef HAVE_SOCKADDR_IN6_SIN_LEN */
+
+/* sockaddr_in has sin_len */
+/* #undef HAVE_SOCKADDR_IN_SIN_LEN */
+
+/* Have socklen_t */
+#define HAVE_SOCKLEN_T 1
+
+/* Have SOL_IP */
+#define HAVE_SOL_IP 1
+
+/* Have SOL_IPV6 */
+#define HAVE_SOL_IPV6 1
+
+/* Have SOL_TCP */
+/* #undef HAVE_SOL_TCP */
+
+/* Define to 1 if the system has the type `struct cmsghdr'. */
+#define HAVE_STRUCT_CMSGHDR 1
+
+/* Define to 1 if `d_off' is a member of `struct dirent'. */
+#define HAVE_STRUCT_DIRENT_D_OFF 1
+
+/* Define to 1 if `d_reclen' is a member of `struct dirent'. */
+#define HAVE_STRUCT_DIRENT_D_RECLEN 1
+
+/* Define to 1 if `d_type' is a member of `struct dirent'. */
+#define HAVE_STRUCT_DIRENT_D_TYPE 1
+
+/* Define to 1 if the system has the type `struct flock'. */
+#define HAVE_STRUCT_FLOCK 1
+
+/* Define to 1 if the system has the type `struct iovec'. */
+#define HAVE_STRUCT_IOVEC 1
+
+/* Have struct ip_mreq */
+/* #undef HAVE_STRUCT_IP_MREQ */
+
+/* Have struct ip_mreqn */
+#define HAVE_STRUCT_IP_MREQN 1
+
+/* Define to 1 if the system has the type `struct linger'. */
+#define HAVE_STRUCT_LINGER 1
+
+/* Define to 1 if `pw_gecos' is a member of `struct passwd'. */
+#define HAVE_STRUCT_PASSWD_PW_GECOS 1
+
+/* Define to 1 if the system has the type `struct pollfd'. */
+#define HAVE_STRUCT_POLLFD 1
+
+/* Define to 1 if the system has the type `struct sockaddr'. */
+#define HAVE_STRUCT_SOCKADDR 1
+
+/* Define to 1 if the system has the type `struct sockaddr_in'. */
+#define HAVE_STRUCT_SOCKADDR_IN 1
+
+/* Define to 1 if the system has the type `struct sockaddr_in6'. */
+#define HAVE_STRUCT_SOCKADDR_IN6 1
+
+/* Define to 1 if the system has the type `struct sockaddr_storage'. */
+#define HAVE_STRUCT_SOCKADDR_STORAGE 1
+
+/* Define to 1 if the system has the type `struct sockaddr_un'. */
+#define HAVE_STRUCT_SOCKADDR_UN 1
+
+/* Define to 1 if the system has the type `struct stat'. */
+#define HAVE_STRUCT_STAT 1
+
+/* Define to 1 if `f_flags' is a member of `struct statfs'. */
+#define HAVE_STRUCT_STATFS_F_FLAGS 1
+
+/* Define to 1 if `st_atim' is a member of `struct stat'. */
+#define HAVE_STRUCT_STAT_ST_ATIM 1
+
+/* Define to 1 if `st_ctim' is a member of `struct stat'. */
+#define HAVE_STRUCT_STAT_ST_CTIM 1
+
+/* Define to 1 if `st_mtim' is a member of `struct stat'. */
+#define HAVE_STRUCT_STAT_ST_MTIM 1
+
+/* Define to 1 if the system has the type `struct timespec'. */
+#define HAVE_STRUCT_TIMESPEC 1
+
+/* Define to 1 if the system has the type `struct timeval'. */
+#define HAVE_STRUCT_TIMEVAL 1
+
+/* Define to 1 if the system has the type `struct timezone'. */
+#define HAVE_STRUCT_TIMEZONE 1
+
+/* Define to 1 if the system has the type `struct utimbuf'. */
+#define HAVE_STRUCT_UTIMBUF 1
+
+/* Define to 1 if you have the `telldir' function. */
+#define HAVE_TELLDIR 1
+
+/* Have timezone variable */
+/* #undef HAVE_TIMEZONE */
+
+/* tls_model available */
+/* #undef HAVE_TLS_MODEL_ATTR */
+
+/* Have a working sigaltstack */
+/* #undef HAVE_WORKING_SIGALTSTACK */
+
+/* Define to 1 if you have the `writev' function. */
+#define HAVE_WRITEV 1
+
+/* Define to 1 if you have the `_finite' function. */
+/* #undef HAVE__FINITE */
+
+/* Define as const if the declaration of iconv() needs const. */
+#define ICONV_CONST 

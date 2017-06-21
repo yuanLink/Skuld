@@ -1,0 +1,7 @@
+add_subdirectory(Support)
+add_subdirectory(UI)
+add_subdirectory(Codec)
+add_subdirectory(Script)
+add_subdirectory(Algorithm)
+add_subdirectory(Storage)
+add_subdirectory(Core3D)

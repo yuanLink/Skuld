@@ -1,0 +1,32 @@
+add_module(Codec 
+	${CMAKE_CURRENT_SOURCE_DIR}/CodecRegister.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapDecoder.h
+	${CMAKE_CURRENT_SOURCE_DIR}/AudioDecoder.h
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapEncoder.h
+	${CMAKE_CURRENT_SOURCE_DIR}/AudioEncoder.h
+	${CMAKE_CURRENT_SOURCE_DIR}/VideoEncoder.h
+	${CMAKE_CURRENT_SOURCE_DIR}/VideoDecoder.h
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapDecoderIcraw.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapDecoderPng.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapDecoderEtc1.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapDecoderTga.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapDecoderJpeg.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapEncoderJpeg.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapEncoderTga.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapEncoderPng.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapEncoderIcraw.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/BitmapEncoderEtc1.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/TextureDecoder.h
+	${CMAKE_CURRENT_SOURCE_DIR}/TextureDecoderDds.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/TextureDecoderEtc1.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/VideoDecoderVP9.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/AudioDecoderOgg.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/AudioDecoderWav.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/AudioEncoderOgg.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/AudioEncoderWav.cpp
+	${SKULD_INCLUDE_DIR}/Skuld/Codec/AudioCodec.h
+	${SKULD_INCLUDE_DIR}/Skuld/Codec/BitmapCodec.h
+	${SKULD_INCLUDE_DIR}/Skuld/Codec/TextureCodec.h
+	${SKULD_INCLUDE_DIR}/Skuld/Codec/VideoCodec.h
+)
+add_target_dependencies(Codec png jpeg etc1 vorbisfile)

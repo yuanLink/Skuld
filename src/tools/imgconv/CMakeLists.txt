@@ -1,0 +1,1 @@
+add_engine_tool(imgconv main.cpp)
