@@ -3,6 +3,14 @@
 #include "IDisposable.h"
 #include <functional>
 
+#ifdef _WIN32
+#define SKULD_DL_POSTFIX ".dll"
+#elif defined(__APPLE__)
+#define SKULD_DL_POSTFIX ".dylib"
+#else
+#define SKULD_DL_POSTFIX ".so"
+#endif
+
 namespace Skuld
 {
 	class DynamicLibrary : public IDisposable

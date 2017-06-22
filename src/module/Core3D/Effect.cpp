@@ -4,6 +4,8 @@
 #include <Skuld/Ptr.hpp>
 #include <functional>
 #include <algorithm>
+#include <Skuld/FileStream.h>
+#include <Skuld/Text.h>
 
 namespace Skuld
 {
@@ -239,6 +241,24 @@ namespace Skuld
 			return mRet.Detach();
 		}
 
+		Effect* Effect::CompileFromFile(const String& mHLSLFile, const String& mEffectScriptFile)
+		{
+			Ptr<FileStream> mHLSL = FileStream::Open(mHLSLFile, Open);
+			Ptr<FileStream> mEffectScript = FileStream::Open(mEffectScriptFile, Open);
+
+			if (mHLSL == nullptr || mEffectScript == nullptr) throw Exception("文件不存在");
+
+			return CompileFromStream(mHLSL, mEffectScript);
+		}
+
+		Effect* Effect::CompileFromStream(Stream* mHLSL, Stream* mEffectScript)
+		{
+			if (mHLSL == nullptr || mEffectScript == nullptr) throw Exception("参数错误");
+
+			return CompileFromString(
+				ReadAllTextFromStream(mHLSL), ReadAllTextFromStream(mEffectScript));
+		}
+
 		void EffectImpl::Save(Stream * mStream) const
 		{
 			mStream->Write("EFCT", 4);
@@ -346,7 +366,7 @@ namespace Skuld
 			return mEffect[mIndex].mName;
 		}
 
-		void LoadShaderCrossCompiler(Extra::ShaderCompileFunc * mEntry)
+		void LoadShaderCrossCompiler(std::function<Extra::ShaderCompileFunc> mEntry)
 		{
 			mCompilerFunc = mEntry;
 		}

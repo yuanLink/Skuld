@@ -3,6 +3,7 @@
 #include "../Stream.h"
 #include "../Render3D/InputLayout.h"
 #include "../Extra/ShaderCrossCompiler.h"
+#include <functional>
 
 namespace Skuld
 {
@@ -16,6 +17,8 @@ namespace Skuld
 			static SKULD_EXPORT Effect* LoadFromStream(Stream* stream);
 
 			static SKULD_EXPORT Effect* CompileFromString(const String& mHLSL, const String& mEffectScript);
+			static SKULD_EXPORT Effect* CompileFromFile(const String& mHLSLFile, const String& mEffectScriptFile);
+			static SKULD_EXPORT Effect* CompileFromStream(Stream* mHLSL, Stream* mEffectScript);
 
 			virtual void Save(Stream* mStream) const = 0;
 
@@ -37,6 +40,6 @@ namespace Skuld
 			virtual size_t GetInputLayoutAttriCount(size_t mIndex) const = 0;
 		};
 
-		SKULD_EXPORT void LoadShaderCrossCompiler(Extra::ShaderCompileFunc* mEntry);
+		SKULD_EXPORT void LoadShaderCrossCompiler(std::function<Extra::ShaderCompileFunc> mEntry);
 	}
 }

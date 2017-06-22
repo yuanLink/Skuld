@@ -67,8 +67,6 @@ namespace Skuld
 			virtual bool EndOfStream() const { return eof; }
 		};
 
-		static CompressedStreamFactory::Register mReg(CompressedStream::CreateDeflateStream, CompressionAlgorithm_Deflate);
-
 		CompressedStream* CompressedStream::CreateDeflateStream(Stream* stream, CompressionMode mode)
 		{
 			if (mode == CompressionMode_Compress)

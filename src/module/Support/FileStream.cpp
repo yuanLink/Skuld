@@ -205,7 +205,7 @@ namespace Skuld
 #endif
 		InternalFileStream* fs = nullptr;
 		if (hdl)
-			fs = new (std::nothrow) InternalFileStream(hdl, Path::GetFullPath(str));
+			fs = new (std::nothrow) InternalFileStream(hdl, GetFullPath(str));
 		return fs;
 	}
 }

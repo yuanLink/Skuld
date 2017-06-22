@@ -28,10 +28,7 @@ namespace Skuld
 			virtual int32_t Offset(long offset);
 			virtual size_t GetPosition() const;
 			virtual size_t GetLength() const;
-#if defined(SKULD_USE_DYNAMIC) || defined(SKULD_BUILD_DYNAMIC)
-			static SKULD_EXPORT EncryptedStream* CreateEncryptedStreamFromStream(EncryptionAlgorithm algorithm,
-				Stream* stream, EncryptionMode mode, const uint8_t* password, size_t password_size);
-#endif
+
 			static SKULD_EXPORT EncryptedStream* CreateXORStream(Stream* stream, EncryptionMode mode, const uint8_t* password, size_t password_size);
 			static SKULD_EXPORT EncryptedStream* CreateAESStream(Stream* stream, EncryptionMode mode, const uint8_t* password, size_t password_size);
 		};

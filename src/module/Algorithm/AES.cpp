@@ -35,8 +35,6 @@ namespace Skuld
 			return new AESStream(mBase, mMode, password, password_size);
 		}
 
-		static EncryptedStreamFactory::Register mReg(EncryptedStream::CreateAESStream, EncryptionAlgorithm_AES);
-
 		size_t AESStream::Read(void * buffer, size_t size)
 		{
 			return size_t();

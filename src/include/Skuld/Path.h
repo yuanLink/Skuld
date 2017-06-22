@@ -1,24 +1,17 @@
 #pragma once
 #include "String.h"
-#include "Export.h"
+#include "String.h"
 
 namespace Skuld
 {
-	class SKULD_EXPORT Path final
-	{
-	private:
-		Path();
-		Path(const Path&&);
-	public:
-		static String NormalizePath(const String& path);
-		static String GetRelativePath(const String& path, const String& base_path);
-		static String GetRelativePath(const String& path);
-		static String GetParentDirectory(const String & path);
-		static String GetFullPath(const String& path);
-		static String GetFullPath(const String& path, const String& base_path);
-		static String GetCurrentDir();
-		static String GetHomePath();
-		static bool IsFullPath(const String& path);
-		static String GetFileName(const String& path);
-	};
+	String NormalizePath(const String& path);
+	String GetRelativePath(const String& path, const String& base_path);
+	String GetRelativePath(const String& path);
+	String GetParentDirectory(const String & path);
+	String GetFullPath(const String& path);
+	String GetFullPath(const String& path, const String& base_path);
+	String GetCurrentDir();
+	String GetHomePath();
+	bool IsFullPath(const String& path);
+	String GetFileName(const String& path);
 }

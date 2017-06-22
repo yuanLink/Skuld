@@ -78,3 +78,11 @@ namespace Skuld
 		}
 	}
 }
+
+#ifdef SKULD_BUILD_DYNAMIC
+extern "C"
+SKULD_EXTRA_EXPORT Skuld::Extra::SCC_Data* Skuld_CompileHLSL(const char* mHLSL, Skuld::Extra::ShaderBinaryFormat mFormat) {
+	return Skuld::Extra::CompileHLSL(mHLSL, mFormat);
+}
+
+#endif

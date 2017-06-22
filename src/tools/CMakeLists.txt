@@ -1,1 +1,2 @@
 add_subdirectory(imgconv)
+add_subdirectory(effectc)

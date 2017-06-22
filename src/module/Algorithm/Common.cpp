@@ -64,19 +64,6 @@ namespace Skuld
 			throw Exception("不支持的方法");
 			return 0;
 		}
-#if defined(SKULD_BUILD_DYNAMIC)
-		CompressedStream* CompressedStream::CreateCompressedStreamFromStream(CompressionAlgorithm algorithm,
-			Stream* stream, CompressionMode mode)
-		{
-			return CompressedStreamFactory::Instance().Create(algorithm, stream, mode);
-		}
-
-		EncryptedStream* EncryptedStream::CreateEncryptedStreamFromStream(EncryptionAlgorithm algorithm,
-			Stream* stream, EncryptionMode mode, const uint8_t* password, size_t password_size)
-		{
-			return EncryptedStreamFactory::Instance().Create(algorithm, stream, mode, password, password_size);
-		}
-#endif
 
 		size_t Hash_GetHashSize(Hash* hash) { return hash->HashSize(); }
 		void Hash_AppendData(Hash* hash, const uint8_t* data, size_t size) { hash->AppendData(data, size); }

@@ -20,7 +20,7 @@ namespace Skuld
 #endif
 	String GetRelativePathInternal(const String & path, const String& base_path)
 	{
-		String ret = Path::GetFullPath(path);
+		String ret = GetFullPath(path);
 
 		std::vector<String> from_tokens = ret.Spilt(SKULD_STR("\\/"), 2, true);
 		std::vector<String> to_tokens = base_path.Spilt(SKULD_STR("\\/"), 2, true);
@@ -34,17 +34,17 @@ namespace Skuld
 		return ret;
 	}
 
-	String Path::GetRelativePath(const String& path, const String& base_path)
+	String GetRelativePath(const String& path, const String& base_path)
 	{
 		return GetRelativePathInternal(path, GetFullPath(base_path));
 	}
 
-	String Path::GetRelativePath(const String & path)
+	String GetRelativePath(const String & path)
 	{
 		return GetRelativePathInternal(path, GetCurrentDir());
 	}
 
-	String Path::NormalizePath(const String & path)
+	String NormalizePath(const String & path)
 	{
 		std::vector<String> path_tokens = path.Spilt(SKULD_STR("\\/"), 2, true);
 		String ret;
@@ -64,7 +64,7 @@ namespace Skuld
 		return ret;
 	}
 
-	String Path::GetParentDirectory(const String& path)
+	String GetParentDirectory(const String& path)
 	{
 		String temp = GetFullPath(path);
 		std::vector<String> ptr = temp.Spilt(SKULD_STR("\\/"), 2, true);
@@ -75,16 +75,16 @@ namespace Skuld
 
 	static String GetFullPathInternal(const String & path, const String & base_path)
 	{
-		if (Path::IsFullPath(path))
+		if (IsFullPath(path))
 		{
-			return Path::NormalizePath(path);
+			return NormalizePath(path);
 		}
 		else
 		{
 #ifndef _WIN32
 			if (path.StartWith("~/"))
 			{
-				return Path::NormalizePath(Path::GetHomePath() + path.Substr(1, path.CharCount() - 1));
+				return NormalizePath(GetHomePath() + path.Substr(1, path.CharCount() - 1));
 			}
 #endif
 			std::vector<String> path_tokens = path.Spilt(SKULD_STR("\\/"), 2, true),
@@ -115,22 +115,22 @@ namespace Skuld
 		}
 	}
 
-	String Path::GetFullPath(const String& path, const String& base_path)
+	String GetFullPath(const String& path, const String& base_path)
 	{
 		return GetFullPathInternal(path, GetFullPath(base_path));
 	}
 
-	String Path::GetFullPath(const String & path)
+	String GetFullPath(const String & path)
 	{
 		return GetFullPathInternal(path, GetCurrentDir());
 	}
 
-	String Path::GetCurrentDir()
+	String GetCurrentDir()
 	{
 		return std::unique_ptr<char[]>(tgetcwd(nullptr, 0)).get();
 	}
 
-	String Path::GetHomePath()
+	String GetHomePath()
 	{
 #ifdef _WIN32
 		wchar_t path[MAX_PATH + 2];
@@ -145,7 +145,7 @@ namespace Skuld
 #endif
 	}
 
-	bool Path::IsFullPath(const String & path)
+	bool IsFullPath(const String & path)
 	{
 #ifdef _WIN32
 		return path[1] == ':' && String::IsLetter(path[0]);
@@ -167,7 +167,7 @@ namespace Skuld
 #endif
 	}
 
-	String Path::GetFileName(const String & path)
+	String GetFileName(const String & path)
 	{
 		std::vector<String> token = path.Spilt(SKULD_STR("/\\"), 2, true);
 		String ret = token[token.size() - 1];

@@ -28,10 +28,6 @@ namespace Skuld
 			virtual int32_t Offset(long offset);
 			virtual size_t GetPosition() const;
 			virtual size_t GetLength() const;
-#if defined(SKULD_USE_DYNAMIC) || defined(SKULD_BUILD_DYNAMIC)
-			static SKULD_EXPORT CompressedStream* CreateCompressedStreamFromStream(CompressionAlgorithm algorithm,
-				Stream* stream, CompressionMode mode);
-#endif
 
 			static SKULD_EXPORT CompressedStream* CreateDeflateStream(Stream* stream, CompressionMode mode);
 			static SKULD_EXPORT CompressedStream* CreateLZMAStream(Stream* stream, CompressionMode mode);

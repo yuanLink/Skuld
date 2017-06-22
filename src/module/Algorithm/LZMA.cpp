@@ -145,7 +145,5 @@ namespace Skuld
 			}
 			else return nullptr;
 		}
-
-		static CompressedStreamFactory::Register mReg(CompressedStream::CreateLZMAStream, CompressionAlgorithm_LZMA);
 	}
 }

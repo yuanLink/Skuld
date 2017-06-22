@@ -37,8 +37,6 @@ namespace Skuld
 			return new XORStream(mBase, mMode, password, password_size);
 		}
 
-		static EncryptedStreamFactory::Register mReg(EncryptedStream::CreateXORStream, EncryptionAlgorithm_XOR);
-
 		size_t XORStream::Read(void * buffer, size_t size)
 		{
 			uint8_t* buf = (uint8_t*)buffer;
