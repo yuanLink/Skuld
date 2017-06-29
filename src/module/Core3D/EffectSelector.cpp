@@ -21,21 +21,25 @@ namespace Skuld
 			{
 				this->mEffectNames[i] = mEffectFile->GetEffectName(i);
 
-				String mVS = mEffectFile->GetVertexShader(i);
 				std::map<String, std::tuple<size_t, Render3D::ShaderType> >::iterator it;
-				if ((it = mShaderList.find(mVS)) != mShaderList.end())
+
+				String mVS = mEffectFile->GetVertexShader(i);
+				it = mShaderList.find(mVS);
+				if (it == mShaderList.end())
 					mShaderList[mVS] = std::make_tuple(mFoundShaderCount++, Render3D::ShaderType_VertexShader);
 				mEffects[i][0] = std::get<0>(mShaderList[mVS]);
 
 				String mPS = mEffectFile->GetPixelShader(i);
-				if ((it = mShaderList.find(mPS)) != mShaderList.end())
+				it = mShaderList.find(mPS);
+				if (it == mShaderList.end())
 					mShaderList[mPS] = std::make_tuple(mFoundShaderCount++, Render3D::ShaderType_PixelShader);
 				mEffects[i][1] = std::get<0>(mShaderList[mPS]);
 
 				if (mEffectFile->HasGeometryShader(i))
 				{
 					String mGS = mEffectFile->GetGeometryShader(i);
-					if ((it = mShaderList.find(mGS)) != mShaderList.end())
+					it = mShaderList.find(mGS);
+					if (it == mShaderList.end())
 						mShaderList[mGS] = std::make_tuple(mFoundShaderCount++, Render3D::ShaderType_GeometryShader);
 					mEffects[i][2] = std::get<0>(mShaderList[mGS]);
 				}
@@ -44,7 +48,8 @@ namespace Skuld
 				if (mEffectFile->HasHullShader(i))
 				{
 					String mHS = mEffectFile->GetHullShader(i);
-					if ((it = mShaderList.find(mHS)) != mShaderList.end())
+					it = mShaderList.find(mHS);
+					if (it == mShaderList.end())
 						mShaderList[mHS] = std::make_tuple(mFoundShaderCount++, Render3D::ShaderType_HullShader);
 					mEffects[i][3] = std::get<0>(mShaderList[mHS]);
 				}
@@ -53,7 +58,8 @@ namespace Skuld
 				if (mEffectFile->HasDomainShader(i))
 				{
 					String mDS = mEffectFile->GetDomainShader(i);
-					if ((it = mShaderList.find(mDS)) != mShaderList.end())
+					it = mShaderList.find(mDS);
+					if (it == mShaderList.end())
 						mShaderList[mDS] = std::make_tuple(mFoundShaderCount++, Render3D::ShaderType_DomainShader);
 					mEffects[i][4] = std::get<0>(mShaderList[mDS]);
 				}
@@ -61,13 +67,14 @@ namespace Skuld
 			}
 			if (mShaderList.size() != mEffectFile->GetShaderCount()) throw Exception("未知错误");
 
+			mShaders.resize(mShaderList.size());
 			for (std::map<String, std::tuple<size_t, Render3D::ShaderType> >::iterator it = mShaderList.begin();
 				it != mShaderList.end(); ++it)
 			{
 				const uint8_t * mShaderBuffer = mEffectFile->GetShader(it->first);
 				size_t mShaderSize = mEffectFile->GetShaderSize(it->first);
 
-				mShaders[std::get<0>(it->second)].Detach(
+				mShaders[std::get<0>(it->second)].Attach(
 					mContext->CreateShader(mShaderBuffer, mShaderSize, std::get<1>(it->second)));
 			}
 
@@ -75,9 +82,9 @@ namespace Skuld
 			{
 				const Render3D::ShaderInputLayoutAttri* mAttri = mEffectFile->GetInputLayoutAttri(i);
 				size_t mAttriCount = mEffectFile->GetInputLayoutAttriCount(i);
-				size_t mShaderIndex = std::get<0>(mShaderList[mEffectFile->GetEffectName(i)]);
+				size_t mShaderIndex = mEffects[i][0];
 
-				mEffectLayouts[i].Detach(
+				mEffectLayouts[i].Attach(
 					mContext->CreateInputLayout(mAttri, mAttriCount, mShaders[mShaderIndex]));
 			}
 		}

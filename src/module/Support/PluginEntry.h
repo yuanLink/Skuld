@@ -13,8 +13,10 @@ namespace Skuld
 		Ptr<DynamicLibrary> plugins[3];
 		StaticPlugin static_plugins[3];
 
+		void* mEntry[3];
+
 		std::function<CreateRender3DFactoryFunc> CreateRender3DFactory;
-		std::function<CreateAudioDeviceFunc> CreateAudioDevice;
+		std::function<CreateAudioFactoryFunc> CreateAudioFactory;
 		std::function<CreateRender2DFactoryFunc> CreateRender2DFactory;
 	};
 }

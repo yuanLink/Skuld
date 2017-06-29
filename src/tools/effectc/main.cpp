@@ -8,6 +8,17 @@ using namespace boost::program_options;
 using namespace Skuld;
 using namespace Skuld::Core;
 
+Extra::ShaderBinaryFormat selectFormat(const String& str)
+{
+	String l = str.ToLower();
+	if (l == "dxbc") return Extra::ShaderBinaryFormat_DXBC;
+	else if (l == "dxil") return Extra::ShaderBinaryFormat_DXIL;
+	else if (l == "spirv") return Extra::ShaderBinaryFormat_SPIRV;
+	else if (l == "glsl") return Extra::ShaderBinaryFormat_GLSL;
+	else if (l == "metal") return Extra::ShaderBinaryFormat_Metal;
+	return Extra::ShaderBinaryFormat_DXBC;
+}
+
 int main(int argc, char** argv)
 {
 	options_description mDesc("effectc");
@@ -16,7 +27,8 @@ int main(int argc, char** argv)
 		("help,h", "Show help.")
 		("hlsl", value<String>(), "HLSL File")
 		("effect-script", value<String>(), "Effect Script JSON")
-		("output,o", value<String>(), "Output Effect file");
+		("output,o", value<String>(), "Output Effect file")
+		("format,f", value<String>(), "Output format(dxbc, dxil, spirv, glsl, metal)");
 	variables_map mVM;
 	store(command_line_parser(argc, argv).options(mDesc).run(), mVM);
 
@@ -27,26 +39,14 @@ int main(int argc, char** argv)
 			std::cout << mDesc << std::endl;
 		else
 		{
-			Ptr<DynamicLibrary> mSCC = DynamicLibrary::OpenDynamicLibrary("ShaderCrossCompiler" SKULD_DL_POSTFIX);
-
-			std::function<Skuld::Extra::ShaderCompileFunc> mEntry =
-				mSCC->GetSymbol<Skuld::Extra::ShaderCompileFunc>("Skuld_CompileHLSL");
-
-			if (mEntry == nullptr)
-				mEntry = mSCC->GetSymbol<Skuld::Extra::ShaderCompileFunc>("_Skuld_CompileHLSL");
-
-			if (mEntry == nullptr)
-			{
-				std::cout << "Cannot load ShaderCrossCompiler" SKULD_DL_POSTFIX << std::endl;
-				return -1;
-			}
-
-			LoadShaderCrossCompiler(mEntry);
+			Extra::ShaderBinaryFormat mFormat;
+			if (mVM.count("format") == 0) mFormat = Extra::ShaderBinaryFormat_DXBC;
+			else mFormat = selectFormat(mVM["format"].as<String>());
 
 			Ptr<Effect> mEffect;
 			try
 			{
-				mEffect = Effect::CompileFromFile(mVM["hlsl"].as<String>(), mVM["effect-script"].as<String>());
+				mEffect = Effect::CompileFromFile(mVM["hlsl"].as<String>(), mVM["effect-script"].as<String>(), mFormat);
 			}
 			catch (Exception& e)
 			{

@@ -14,15 +14,26 @@ namespace Skuld
 		class DXBCCompiler : public Compiler
 		{
 			virtual Extra::ShaderBinaryFormat Format() { return Extra::ShaderBinaryFormat_DXBC; }
-			virtual bool Compile(const char* mSrc, std::vector<uint8_t>& mDst);
+			virtual bool Compile(const char* mSrc, std::vector<uint8_t>& mDst,
+				Render3D::ShaderType mProfile, const char* mMain);
 		};
 
-		bool DXBCCompiler::Compile(const char* mSrc, std::vector<uint8_t>& mDst)
+		static const char mProfileStr[][10] = {
+			"vs_5_0",
+			"ps_5_0",
+			"gs_5_0",
+			"hs_5_0",
+			"ds_5_0",
+			"cs_5_0"
+		};
+
+		bool DXBCCompiler::Compile(const char* mSrc, std::vector<uint8_t>& mDst,
+			Render3D::ShaderType mProfile, const char* mMain)
 		{
 			CComPtr<ID3D10Blob> mOutput, mErr;
 
-			HRESULT hr = D3DCompile(mSrc, -1, "scc.hlsl", nullptr,
-				nullptr, mEntry.c_str(), mProfile.c_str(), 0, 0, &mOutput, &mErr);
+			HRESULT hr = D3DCompile(mSrc, strlen(mSrc), "scc.hlsl", nullptr,
+				nullptr, mMain, mProfileStr[mProfile], 0, 0, &mOutput, &mErr);
 
 			if (!FAILED(hr))
 			{
@@ -66,7 +77,7 @@ namespace Skuld
 {
 	namespace ShaderCrossCompiler
 	{
-		std::shared_ptr<Compiler> CreateeDXBCCompiler() {
+		std::shared_ptr<Compiler> CreateDXBCCompiler() {
 			return std::make_shared<DXBCCompiler>();
 		}
 	}

@@ -1,16 +1,29 @@
 #include "D3D11Texture2D.h"
 
 #include "D3D11Utility.h"
+#include "D3D11Context.h"
 
 namespace Skuld
 {
 	namespace Render3D
 	{
-		D3D11Texture2D * D3D11Texture2D::Create(CComPtr<ID3D11Device> mDevice, const D3D11Factory* mFactory,
-			const uint8_t * mPixels, uint32_t mWidth, uint32_t mHeight, PixelFormat mPixelFormat)
+		class D3D11Texture2DHelper
 		{
-			CComPtr<ID3D11Texture2D> mTexture2D;
-			CComPtr<ID3D11ShaderResourceView> mSRV;
+		public:
+			static inline HRESULT CreateShaderResourceView(D3D11Context* mContext, D3D11Texture2D* mRet)
+			{
+				D3D11_SHADER_RESOURCE_VIEW_DESC mDesc;
+				memset(&mDesc, 0, sizeof(mDesc));
+				return mContext->D3DDevice()->CreateShaderResourceView(mRet->mTexture2D,
+					nullptr, &mRet->mSRV);
+			}
+		};
+
+		D3D11Texture2D * D3D11Texture2D::Create(D3D11Context* mContext,
+			const uint8_t * mPixels, uint32_t mWidth, uint32_t mHeight,
+			PixelFormat mPixelFormat, AccessFlag mAccess, TextureBindFlag mBind)
+		{
+			Ptr<D3D11Texture2D> mRet = new D3D11Texture2D(mContext);
 			D3D11_TEXTURE2D_DESC mDesc;
 			memset(&mDesc, 0, sizeof(mDesc));
 			mDesc.Height = static_cast<UINT>(mHeight);
@@ -20,23 +33,33 @@ namespace Skuld
 			mDesc.ArraySize = 1;
 			mDesc.SampleDesc.Count = 1;
 			mDesc.MipLevels = 1;
-			mDesc.Usage = D3D11_USAGE_IMMUTABLE;
-			mDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
+			mDesc.Usage = AccessFlagToUsage(mAccess);
+
+			if (mDesc.Usage == D3D11_USAGE_STAGING)
+			{
+				if (mAccess & Access_CPURead) mDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_READ;
+				if (mAccess & Access_CPUWrite) mDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_WRITE;
+			}
+			mDesc.BindFlags = TextureBindFlagToD3D11BindFlag(mBind);
+
+			std::unique_ptr<D3D11_SUBRESOURCE_DATA> mInitialData = nullptr;
 			if (mPixels != nullptr)
 			{
-				D3D11_SUBRESOURCE_DATA mInitialData;
-				memset(&mInitialData, 0, sizeof(mInitialData));
+				mInitialData = std::make_unique<D3D11_SUBRESOURCE_DATA>();
+				memset(mInitialData.get(), 0, sizeof(D3D11_SUBRESOURCE_DATA));
 
-				mInitialData.pSysMem = mPixels;
-				mInitialData.SysMemPitch = PixelFormatDepth(mPixelFormat) * mWidth;
-				mDevice->CreateTexture2D(&mDesc, &mInitialData, &mTexture2D);
+				mInitialData->pSysMem = mPixels;
+				mInitialData->SysMemPitch = PixelFormatDepth(mPixelFormat) / 8 * mWidth;
 			}
-			else mDevice->CreateTexture2D(&mDesc, nullptr, &mTexture2D);
+			HRESULT hr = mContext->D3DDevice()->CreateTexture2D(&mDesc, mInitialData.get(), &mRet->mTexture2D);
 
-			mDevice->CreateShaderResourceView(mTexture2D, nullptr, &mSRV);
+			RETURN_NULL_IF_FAILED(hr);
 
-			return new D3D11Texture2D(mFactory, mTexture2D, mSRV);
+			if (mBind & TextureBind_ShaderResource)
+				RETURN_NULL_IF_FAILED(D3D11Texture2DHelper::CreateShaderResourceView(mContext, mRet));
+
+			return mRet.Detach();
 		}
 	}
 }

@@ -12,17 +12,28 @@ namespace Skuld
 	namespace Core
 	{
 		static std::function<Extra::ShaderCompileFunc> mCompilerFunc;
+		static Ptr<DynamicLibrary> mSCC = nullptr;
 
 		static void CheckCompiler()
 		{
 			if (mCompilerFunc != nullptr) return;
-			throw Exception("未加载ShaderCrossCompiler");
+
+			mSCC = DynamicLibrary::OpenDynamicLibrary("ShaderCrossCompiler" SKULD_DL_POSTFIX);
+
+			mCompilerFunc = mSCC->GetSymbol<Skuld::Extra::ShaderCompileFunc>("Skuld_CompileHLSL");
+
+			if (mCompilerFunc == nullptr)
+				mCompilerFunc = mSCC->GetSymbol<Skuld::Extra::ShaderCompileFunc>("_Skuld_CompileHLSL");
+
+			if (mCompilerFunc == nullptr) throw Exception("Cannot load ShaderCrossCompiler" SKULD_DL_POSTFIX);
 		}
 
 		static std::vector<uint8_t> CompileShader(const std::string& mUTF8HLSL,
-			const char* mProfile, const char* mEntry)
+			Render3D::ShaderType mProfile, const char* mEntry,
+			Extra::ShaderBinaryFormat mFormat)
 		{
-			Ptr<Extra::SCC_Data> mRet = mCompilerFunc(mUTF8HLSL.c_str(), Extra::ShaderBinaryFormat_DXBC);
+			Ptr<Extra::SCC_Data> mRet = mCompilerFunc(mUTF8HLSL.c_str(), 
+				mFormat, mProfile, mEntry);
 			if (mRet->DataSize() == 0)
 				throw Exception(String("编译失败：") + mRet->ErrorOrWarning());
 			std::vector<uint8_t> mR(mRet->DataSize());
@@ -49,7 +60,7 @@ namespace Skuld
 			mStream->Read(&mEffCnt);
 			mStream->Read(&mShaCnt);
 			mRet->mEffect.resize(mEffCnt);
-			mRet->mEffectFlag = mStream->ReadString();
+			mStream->Read(&mRet->mFormat);
 
 			for (EachEffect& mEff : mRet->mEffect)
 			{
@@ -88,11 +99,14 @@ namespace Skuld
 			return mRet.Detach();
 		}
 
-		Effect * Effect::CompileFromString(const String & mHLSL, const String & mEffectScript)
+		Effect * Effect::CompileFromString(const String & mHLSL, const String & mEffectScript,
+			Extra::ShaderBinaryFormat mFormat)
 		{
 			CheckCompiler();
 
 			Ptr<EffectImpl> mRet(new EffectImpl());
+
+			mRet->mFormat = mFormat;
 
 			std::string mHLSL_ = mHLSL.GetUTF8Str();
 
@@ -181,7 +195,7 @@ namespace Skuld
 				if (mRet->mShaderName.find(mPSEntry) == mRet->mShaderName.end())
 				{
 					mRet->mShaderName[mPSEntry] = std::move(
-						CompileShader(mHLSL_, "ps_6_0", mPSEntry.GetUTF8Str().c_str())
+						CompileShader(mHLSL_, Render3D::ShaderType_PixelShader, mPSEntry.GetUTF8Str().c_str(), mFormat)
 					);
 				}
 				mCompiledEffect.mPixelShader = mPSEntry;
@@ -189,7 +203,7 @@ namespace Skuld
 				if (mRet->mShaderName.find(mVSEntry) == mRet->mShaderName.end())
 				{
 					mRet->mShaderName[mVSEntry] = std::move(
-						CompileShader(mHLSL_, "vs_6_0", mVSEntry.GetUTF8Str().c_str())
+						CompileShader(mHLSL_, Render3D::ShaderType_VertexShader, mVSEntry.GetUTF8Str().c_str(), mFormat)
 					);
 				}
 				mCompiledEffect.mVertexShader = mVSEntry;
@@ -200,7 +214,7 @@ namespace Skuld
 					if (mRet->mShaderName.find(mGSEntry) == mRet->mShaderName.end())
 					{
 						mRet->mShaderName[mGSEntry] = std::move(
-							CompileShader(mHLSL_, "gs_6_0", mGSEntry.GetUTF8Str().c_str())
+							CompileShader(mHLSL_, Render3D::ShaderType_GeometryShader, mGSEntry.GetUTF8Str().c_str(), mFormat)
 						);
 					}
 					mCompiledEffect.mGeometryShader = mGSEntry;
@@ -214,7 +228,7 @@ namespace Skuld
 					if (mRet->mShaderName.find(mHSEntry) == mRet->mShaderName.end())
 					{
 						mRet->mShaderName[mHSEntry] = std::move(
-							CompileShader(mHLSL_, "hs_6_0", mHSEntry.GetUTF8Str().c_str())
+							CompileShader(mHLSL_, Render3D::ShaderType_HullShader, mHSEntry.GetUTF8Str().c_str(), mFormat)
 						);
 					}
 					mCompiledEffect.mHullShader = mHSEntry;
@@ -228,7 +242,7 @@ namespace Skuld
 					if (mRet->mShaderName.find(mDSEntry) == mRet->mShaderName.end())
 					{
 						mRet->mShaderName[mDSEntry] = std::move(
-							CompileShader(mHLSL_, "ds_6_0", mDSEntry.GetUTF8Str().c_str())
+							CompileShader(mHLSL_, Render3D::ShaderType_DomainShader, mDSEntry.GetUTF8Str().c_str(), mFormat)
 						);
 					}
 					mCompiledEffect.mDomainShader = mDSEntry;
@@ -241,22 +255,24 @@ namespace Skuld
 			return mRet.Detach();
 		}
 
-		Effect* Effect::CompileFromFile(const String& mHLSLFile, const String& mEffectScriptFile)
+		Effect* Effect::CompileFromFile(const String& mHLSLFile, const String& mEffectScriptFile,
+			Extra::ShaderBinaryFormat mFormat)
 		{
 			Ptr<FileStream> mHLSL = FileStream::Open(mHLSLFile, Open);
 			Ptr<FileStream> mEffectScript = FileStream::Open(mEffectScriptFile, Open);
 
 			if (mHLSL == nullptr || mEffectScript == nullptr) throw Exception("文件不存在");
 
-			return CompileFromStream(mHLSL, mEffectScript);
+			return CompileFromStream(mHLSL, mEffectScript, mFormat);
 		}
 
-		Effect* Effect::CompileFromStream(Stream* mHLSL, Stream* mEffectScript)
+		Effect* Effect::CompileFromStream(Stream* mHLSL, Stream* mEffectScript,
+			Extra::ShaderBinaryFormat mFormat)
 		{
 			if (mHLSL == nullptr || mEffectScript == nullptr) throw Exception("参数错误");
 
 			return CompileFromString(
-				ReadAllTextFromStream(mHLSL), ReadAllTextFromStream(mEffectScript));
+				ReadAllTextFromStream(mHLSL), ReadAllTextFromStream(mEffectScript), mFormat);
 		}
 
 		void EffectImpl::Save(Stream * mStream) const
@@ -266,7 +282,7 @@ namespace Skuld
 			uint32_t mShaCnt = static_cast<uint32_t>(mShaderName.size());
 			mStream->Write(&mEffCnt);
 			mStream->Write(&mShaCnt);
-			mStream->WriteString(mEffectFlag);
+			mStream->Write(&mFormat);
 
 			for (const EachEffect& mEff : mEffect)
 			{
@@ -296,6 +312,25 @@ namespace Skuld
 				uint32_t mCodeSize = static_cast<uint32_t>(mShader.second.size());
 				mStream->Write(&mCodeSize);
 				mStream->Write(mShader.second.data(), mShader.second.size());
+			}
+		}
+
+		CheckFlags EffectImpl::GetShaderType() const
+		{
+			switch (mFormat)
+			{
+			case Skuld::Extra::ShaderBinaryFormat_DXBC:
+				return CheckFlags().UnsetAllRender3DAPI().Set(AvaliableRender3DAPI_D3D11 | AvaliableRender3DAPI_D3D12);
+			case Skuld::Extra::ShaderBinaryFormat_DXIL:
+				return CheckFlags().UnsetAllRender3DAPI().Set(AvaliableRender3DAPI_D3D12);
+			case Skuld::Extra::ShaderBinaryFormat_SPIRV:
+				return CheckFlags().UnsetAllRender3DAPI().Set(AvaliableRender3DAPI_Vulkan);
+			case Skuld::Extra::ShaderBinaryFormat_GLSL:
+				return CheckFlags().UnsetAllRender3DAPI().Set(AvaliableRender3DAPI_OpenGL | AvaliableRender3DAPI_OpenGLES);
+			case Skuld::Extra::ShaderBinaryFormat_Metal:
+				return CheckFlags().UnsetAllRender3DAPI().Set(AvaliableRender3DAPI_Metal);
+			default:
+				return CheckFlags().UnsetAllRender3DAPI();
 			}
 		}
 

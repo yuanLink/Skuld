@@ -12,26 +12,25 @@ namespace Skuld
 		protected:
 			virtual ~D3D11RenderState() {}
 
-			const D3D11Factory* mFactory;
+			D3D11Context* mContext;
 
 			CComPtr<ID3D11RasterizerState> mRasterizerState;
 			CComPtr<ID3D11DepthStencilState> mDepthStencilState;
 			CComPtr<ID3D11BlendState> mBlendState;
 
+#ifdef __d3d11_1_h__
+			CComPtr<ID3D11RasterizerState1> mRasterizerState1;
+			CComPtr<ID3D11BlendState1> mBlendState1;
+#endif
+#ifdef __d3d11_3_h__
+			CComPtr<ID3D11RasterizerState2> mRasterizerState2;
+#endif
+
 			friend class D3D11Context;
-			static D3D11RenderState* Create(CComPtr<ID3D11Device> mDevice, const D3D11Factory* mFactory);
+			friend class D3D11RenderStateHelper;
+			static D3D11RenderState* Create(D3D11Context* mContext);
 
-			D3D11RenderState(CComPtr<ID3D11RasterizerState> mRasterizerState,
-				CComPtr<ID3D11DepthStencilState> mDepthStencilState,
-				CComPtr<ID3D11BlendState> mBlendState,
-				const D3D11Factory* mFactory
-			) :
-				mRasterizerState(mRasterizerState),
-				mDepthStencilState(mDepthStencilState),
-				mBlendState(mBlendState),
-				mFactory(mFactory)
-			{}
-
+			D3D11RenderState(D3D11Context* mContext) : mContext(mContext) {}
 		public:
 			virtual const Render3DFactory* GetFactory() const;
 		};

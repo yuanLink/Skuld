@@ -1,4 +1,5 @@
 #include "D3D11Utility.h"
+#include <Skuld/Exception.h>
 
 namespace Skuld
 {
@@ -96,6 +97,41 @@ namespace Skuld
 			case PixelFormat_ARGB_1555:return DXGI_FORMAT_B5G5R5A1_UNORM;
 			default:return DXGI_FORMAT_UNKNOWN;
 			}
+		}
+
+		UINT BufferBindFlagToD3D11BindFlag(BufferBindFlag mBind)
+		{
+			UINT mRet = 0;
+			if (mBind & Skuld::Render3D::BufferBind_VertexBuffer)
+				mRet |= D3D11_BIND_VERTEX_BUFFER;
+			if (mBind & Skuld::Render3D::BufferBind_IndexBuffer)
+				mRet |= D3D11_BIND_INDEX_BUFFER;
+			if (mBind & Skuld::Render3D::BufferBind_ConstantBuffer)
+				mRet |= D3D11_BIND_CONSTANT_BUFFER;
+			if (mBind & Skuld::Render3D::BufferBind_ShaderResource)
+				mRet |= D3D11_BIND_SHADER_RESOURCE;
+
+			return mRet;
+		}
+
+		UINT TextureBindFlagToD3D11BindFlag(TextureBindFlag mBind)
+		{
+			UINT mRet = 0;
+
+			if (mBind & Skuld::Render3D::TextureBind_ShaderResource)
+				mRet |= D3D11_BIND_SHADER_RESOURCE;
+
+			return mRet;
+		}
+
+		D3D11_USAGE AccessFlagToUsage(AccessFlag mAccess)
+		{
+			if (mAccess == Access_GPURead) return D3D11_USAGE_IMMUTABLE;
+			else if ((mAccess & Access_CPURead) == 0 && (mAccess & Access_GPUWrite) == 0)
+				return D3D11_USAGE_DYNAMIC;
+			else if ((mAccess & Access_CPURead) == 0 && (mAccess & Access_CPUWrite) == 0)
+				return D3D11_USAGE_DEFAULT;
+			else return D3D11_USAGE_STAGING;
 		}
 	}
 }

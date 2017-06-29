@@ -1,0 +1,1 @@
+add_engine_tool(assetspak main.cpp)

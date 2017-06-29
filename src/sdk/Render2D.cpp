@@ -1,16 +1,16 @@
-#include <EngineName/Support/Plugin.h>
+#include <Skuld/Plugin.h>
 
 extern "C"
 {
-	extern ENGINENAME::CreateRender2DFactoryFunc GetRender2DFactoryEntry();
+	extern Skuld::CreateRender2DFactoryFunc* GetRender2DFactoryEntry();
 
-	ENGINENAME_PLUGIN_EXPORT void *ENGINENAME_GetPluginEntry()
+	SKULD_PLUGIN_EXPORT void *Skuld_GetPluginEntry()
 	{
 		return (void*)GetRender2DFactoryEntry();
 	}
 
-	ENGINENAME_PLUGIN_EXPORT int ENGINENAME_GetPluginSig()
+	SKULD_PLUGIN_EXPORT int Skuld_GetPluginSig()
 	{
-		return ENGINENAME::PluginType::tRender2D;
+		return Skuld::PluginType::tRender2D;
 	}
 }

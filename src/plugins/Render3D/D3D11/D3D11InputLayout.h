@@ -1,6 +1,6 @@
 #pragma once
 #include <Skuld/Render3D/InputLayout.h>
-#include "D3D11Shader.h"
+#include "D3D11ShaderObject.h"
 
 namespace Skuld
 {
@@ -12,15 +12,14 @@ namespace Skuld
 			virtual ~D3D11InputLayout() {}
 
 			CComPtr<ID3D11InputLayout> mInputLayout;
-			const D3D11Factory* mFactory;
+			D3D11Context* mContext;
 
 			friend class D3D11Context;
 
 			static D3D11InputLayout* CreateD3D11InputLayout(const ShaderInputLayoutAttri* mAttri, size_t mSize,
-				Shader* mShader, CComPtr<ID3D11Device> mDevice, const D3D11Factory* mFactory);
+				ShaderObject* mShader, D3D11Context* mContext);
 
-			D3D11InputLayout(CComPtr<ID3D11InputLayout> mInputLayout, const D3D11Factory* mFactory) :
-				mInputLayout(mInputLayout), mFactory(mFactory) {}
+			D3D11InputLayout(D3D11Context* mContext) : mContext(mContext) {}
 		public:
 			virtual const Render3DFactory* GetFactory() const;
 		};

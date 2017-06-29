@@ -1,13 +1,16 @@
 #include "Compiler.h"
 #include <functional>
 #include <Skuld/Ptr.hpp>
-#include <spirv_glsl.hpp>
 
 namespace Skuld
 {
 	namespace ShaderCrossCompiler
 	{
-		std::shared_ptr<Compiler> CreateeDXBCCompiler();
+		std::shared_ptr<Compiler> CreateDXBCCompiler();
+		std::shared_ptr<Compiler> CreateDXILCompiler();
+		std::shared_ptr<Compiler> CreateGLSLCompiler();
+		std::shared_ptr<Compiler> CreateSPIRVCompiler();
+		std::shared_ptr<Compiler> CreateMetalCompiler();
 	}
 }
 
@@ -24,7 +27,11 @@ namespace Skuld
 				}
 
 				CompilerRegister() {
-					Register(ShaderCrossCompiler::CreateeDXBCCompiler);
+					Register(ShaderCrossCompiler::CreateDXBCCompiler);
+					Register(ShaderCrossCompiler::CreateSPIRVCompiler);
+					Register(ShaderCrossCompiler::CreateGLSLCompiler);
+					Register(ShaderCrossCompiler::CreateMetalCompiler);
+					Register(ShaderCrossCompiler::CreateDXILCompiler);
 				}
 			};
 
@@ -44,13 +51,8 @@ namespace Skuld
 			};
 		}
 
-		std::string SPIRVToGLSL(const SCC_Data* mData)
-		{
-			spirv_cross::CompilerGLSL mTemp(reinterpret_cast<const uint32_t*>(mData->Data()), mData->DataSize() / 4);
-			return mTemp.compile();
-		}
-
-		SCC_Data* CompileHLSL(const char* mHLSL, ShaderBinaryFormat mFormat)
+		SCC_Data* CompileHLSL(const char* mHLSL, ShaderBinaryFormat mFormat,
+			Render3D::ShaderType mProfile, const char* mMain)
 		{
 			for (std::function<std::shared_ptr<ShaderCrossCompiler::Compiler>()>& mCompilerFactory : mRegister.mObjects)
 			{
@@ -60,7 +62,7 @@ namespace Skuld
 					try
 					{
 						Ptr<SCC_DataImpl> mRet(new SCC_DataImpl());
-						bool mStatus = mCompiler->Compile(mHLSL, mRet->mData);
+						bool mStatus = mCompiler->Compile(mHLSL, mRet->mData, mProfile, mMain);
 						if (!mStatus) {
 							mRet->mErrOrWarning = mCompiler->mWarning;
 						}
@@ -81,8 +83,9 @@ namespace Skuld
 
 #ifdef SKULD_BUILD_DYNAMIC
 extern "C"
-SKULD_EXTRA_EXPORT Skuld::Extra::SCC_Data* Skuld_CompileHLSL(const char* mHLSL, Skuld::Extra::ShaderBinaryFormat mFormat) {
-	return Skuld::Extra::CompileHLSL(mHLSL, mFormat);
+SKULD_EXTRA_EXPORT Skuld::Extra::SCC_Data* Skuld_CompileHLSL(const char* mHLSL, Skuld::Extra::ShaderBinaryFormat mFormat,
+	Skuld::Render3D::ShaderType mProfile, const char* mMain) {
+	return Skuld::Extra::CompileHLSL(mHLSL, mFormat, mProfile, mMain);
 }
 
 #endif

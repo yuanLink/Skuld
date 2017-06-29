@@ -15,12 +15,12 @@ namespace Skuld
 	}
 	namespace Audio
 	{
-		class AudioDevice;
+		class AudioFactory;
 	}
 
 	typedef Render3D::Render3DFactory* (CreateRender3DFactoryFunc)();
 	typedef Render2D::Render2DFactory* (CreateRender2DFactoryFunc)();
-	typedef Audio::AudioDevice* (CreateAudioDeviceFunc)();
+	typedef Audio::AudioFactory* (CreateAudioFactoryFunc)();
 
 	class SkuldEngine;
 	SKULD_EXPORT SkuldEngine* CreateEngine();
@@ -47,4 +47,6 @@ namespace Skuld
 
 	SKULD_EXPORT const StaticPlugin* LoadStaticPlugin(SkuldEngine* engine, const StaticPlugin& plugin);
 	SKULD_EXPORT void UnloadStaticPlugin(SkuldEngine* engine, const StaticPlugin* handle);
+
+	SKULD_EXPORT const void* GetPluginEntry(const SkuldEngine*, PluginType mType);
 }

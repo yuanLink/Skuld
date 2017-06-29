@@ -3,6 +3,8 @@
 #include "D3D11Context.h"
 #include <WindowInfo.h>
 
+#include "D3D11Utility.h"
+
 namespace Skuld
 {
 	namespace Render3D
@@ -73,13 +75,15 @@ namespace Skuld
 			}
 
 			CComPtr<ID3D11Texture2D> mColorBuffer;
-			hr = mSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&mColorBuffer);
-			if (FAILED(hr)) return nullptr;
+			hr = mSwapChain->GetBuffer(0, IID_PPV_ARGS(&mColorBuffer));
+			RETURN_NULL_IF_FAILED(hr);
 
-			Ptr<D3D11FrameBufferObject> mFBO(
-				D3D11FrameBufferObject::Create(this, mDevice, mColorBuffer, msaa_quality));
+			Ptr<D3D11Context> mRet = new D3D11Context(this, mDriverType, mFeatureLevel,
+				mDevice, mContext, mSwapChain);
 
-			return new D3D11Context(this, mDriverType, mFeatureLevel, mDevice, mContext, mSwapChain, mFBO);
+			mRet->mFBO = D3D11FrameBufferObject::Create(mRet, mColorBuffer, msaa_quality);
+
+			return mRet.Detach();
 		}
 	}
 }

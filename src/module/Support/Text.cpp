@@ -27,7 +27,7 @@ namespace Skuld
 
 		size_t mLength = mStream->GetLength();
 
-		if (mFlag & 0xffffff == UTF8BOM)
+		if ((mFlag & 0xffffff) == UTF8BOM)
 		{
 			std::vector<uint8_t> mBuffer(mLength + 1);
 			mStream->Read(mBuffer.data(), mLength);

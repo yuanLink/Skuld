@@ -2,6 +2,7 @@
 
 #include "../String.h"
 #include "../IDisposable.h"
+#include "../Render3D/ShaderObject.h"
 
 namespace Skuld
 {
@@ -12,7 +13,8 @@ namespace Skuld
 			ShaderBinaryFormat_DXBC,
 			ShaderBinaryFormat_DXIL,
 			ShaderBinaryFormat_SPIRV,
-			ShaderBinaryFormat_MetalIR
+			ShaderBinaryFormat_GLSL,
+			ShaderBinaryFormat_Metal
 		};
 
 		class SCC_Data : public IDisposable
@@ -25,8 +27,9 @@ namespace Skuld
 			virtual const char* ErrorOrWarning() const = 0;
 		};
 
-		SKULD_EXTRA_EXPORT SCC_Data* CompileHLSL(const char* mHLSL, ShaderBinaryFormat mFormat);
-		SKULD_EXTRA_EXPORT std::string SPIRVToGLSL(const SCC_Data* mData);
-		typedef SCC_Data* (ShaderCompileFunc)(const char* mHLSL, ShaderBinaryFormat mFormat);
+		SKULD_EXTRA_EXPORT SCC_Data* CompileHLSL(const char* mHLSL, ShaderBinaryFormat mFormat,
+			Render3D::ShaderType mProfile, const char* mMain);
+		typedef SCC_Data* (ShaderCompileFunc)(const char* mHLSL, ShaderBinaryFormat mFormat,
+			Render3D::ShaderType mProfile, const char* mMain);
 	}
 }

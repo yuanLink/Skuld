@@ -1,15 +1,18 @@
 #include "D3D11FrameBufferObject.h"
+#include "D3D11Context.h"
+
+#include "D3D11Utility.h"
 
 namespace Skuld
 {
 	namespace Render3D
 	{
 		D3D11FrameBufferObject * D3D11FrameBufferObject::Create(
-			const D3D11Factory* mFactory,
-			CComPtr<ID3D11Device> mDevice,
+			D3D11Context* mContext,
 			CComPtr<ID3D11Texture2D> mColorBuffer,
 			uint32_t mMSAAQuality)
 		{
+			Ptr<D3D11FrameBufferObject> mRet = new D3D11FrameBufferObject(mContext);
 			D3D11_TEXTURE2D_DESC mColorBufferDesc;
 			D3D11_TEXTURE2D_DESC mDepthBufferDesc;
 			mColorBuffer->GetDesc(&mColorBufferDesc);
@@ -26,8 +29,7 @@ namespace Skuld
 			mDepthBufferDesc.MiscFlags = 0;
 			mDepthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
-			CComPtr<ID3D11Texture2D> mDepthBuffer;
-			mDevice->CreateTexture2D(&mDepthBufferDesc, nullptr, &mDepthBuffer);
+			mContext->D3DDevice()->CreateTexture2D(&mDepthBufferDesc, nullptr, &mRet->mDepthBuffer);
 
 			D3D11_DEPTH_STENCIL_VIEW_DESC mDSVDesc;
 			memset(&mDSVDesc, 0, sizeof(mDSVDesc));
@@ -35,19 +37,19 @@ namespace Skuld
 			mDSVDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 			mDSVDesc.Texture2D.MipSlice = 0;
 
-			CComPtr<ID3D11DepthStencilView> mDepthStencilView;
-			mDevice->CreateDepthStencilView(mDepthBuffer, &mDSVDesc, &mDepthStencilView);
+			RETURN_NULL_IF_FAILED(mContext->D3DDevice()->CreateDepthStencilView(mRet->mDepthBuffer,
+				&mDSVDesc, &mRet->mDepthStencilView));
+			RETURN_NULL_IF_FAILED(mContext->D3DDevice()->CreateRenderTargetView(mColorBuffer, 
+				nullptr, &mRet->mRenderTargetView));
 
-			CComPtr<ID3D11RenderTargetView> mRenderTargetView;
-			mDevice->CreateRenderTargetView(mColorBuffer, nullptr, &mRenderTargetView);
+			mRet->mColorBuffer = mColorBuffer;
 
-			return new D3D11FrameBufferObject(mFactory,
-				mColorBuffer, mDepthBuffer, mRenderTargetView, mDepthStencilView);
+			return new D3D11FrameBufferObject(mContext);
 		}
 
 		const Render3DFactory * D3D11FrameBufferObject::GetFactory() const
 		{
-			return mFactory;
+			return mContext->GetFactory();
 		}
 	}
 }

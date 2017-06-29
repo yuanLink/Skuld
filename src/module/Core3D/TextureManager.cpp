@@ -1,5 +1,7 @@
 #include "TextureManager.h"
 
+using namespace Skuld::Render3D;
+
 namespace Skuld
 {
 	namespace Core
@@ -11,7 +13,9 @@ namespace Skuld
 				mBitmap->GetPixels(),
 				mBitmap->GetWidth(),
 				mBitmap->GetHeight(),
-				mBitmap->GetPixelFormat()
+				mBitmap->GetPixelFormat(),
+				Access_GPURead | Access_GPUWrite,
+				TextureBind_ShaderResource
 			);
 		}
 	}

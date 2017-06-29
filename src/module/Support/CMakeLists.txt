@@ -1,10 +1,10 @@
 add_module(Support 
 	${CMAKE_CURRENT_SOURCE_DIR}/FileStream.cpp 
 	${CMAKE_CURRENT_SOURCE_DIR}/License.cpp 
-	${CMAKE_CURRENT_SOURCE_DIR}/MemoryFile.cpp 
 	${CMAKE_CURRENT_SOURCE_DIR}/Path.cpp 
 	${CMAKE_CURRENT_SOURCE_DIR}/Text.cpp 
 	${CMAKE_CURRENT_SOURCE_DIR}/MemoryStream.cpp 
+	${CMAKE_CURRENT_SOURCE_DIR}/LanguagePack.cpp 
 	${CMAKE_CURRENT_SOURCE_DIR}/Stream.cpp 
 	${CMAKE_CURRENT_SOURCE_DIR}/MathLib.cpp 
 	${CMAKE_CURRENT_SOURCE_DIR}/SIMDMath.cpp 
@@ -35,12 +35,12 @@ add_module(Support
 	${SKULD_INCLUDE_DIR}/Skuld/Bitmap.h 
 	${SKULD_INCLUDE_DIR}/Skuld/PixelFormat.h 
 	${SKULD_INCLUDE_DIR}/Skuld/FileStream.h 
-	${SKULD_INCLUDE_DIR}/Skuld/MemoryFile.h 
 	${SKULD_INCLUDE_DIR}/Skuld/Path.h 
 	${SKULD_INCLUDE_DIR}/Skuld/Text.h 
 	${SKULD_INCLUDE_DIR}/Skuld/MemoryStream.h 
 	${SKULD_INCLUDE_DIR}/Skuld/Stream.h 
 	${SKULD_INCLUDE_DIR}/Skuld/MathStruct.h
+	${SKULD_INCLUDE_DIR}/Skuld/LanguagePack.h
 	${SKULD_INCLUDE_DIR}/Skuld/DynamicLibrary.h)
 target_include_directories(Support PRIVATE ${SKULD_INTERNAL_INCLUDE_DIR})
-add_target_dependencies(Support boost tinyxml2)
+add_target_dependencies(Support boost tinyxml2 jsoncpp)

@@ -9,18 +9,13 @@ namespace Skuld
 		protected:
 			virtual ~D3D11Texture3D() {}
 			CComPtr<ID3D11Texture3D> mTexture3D;
-			CComPtr<ID3D11ShaderResourceView> mSRV;
-			const Render3DFactory* mFactory;
 
 			friend class D3D11Context;
-			static D3D11Texture3D* Create(CComPtr<ID3D11Device> mDevice, const D3D11Factory* mFactory,
-				const uint8_t * mPixels, uint32_t mWidth, uint32_t mHeight, uint32_t mDepth, PixelFormat mPixelFormat);
+			static D3D11Texture3D* Create(D3D11Context* mContext,
+				const uint8_t * mPixels, uint32_t mWidth, uint32_t mHeight, uint32_t mDepth,
+				PixelFormat mPixelFormat, AccessFlag mAccess, TextureBindFlag mBind);
 
-			D3D11Texture3D(const D3D11Factory* mFactory, CComPtr<ID3D11Texture3D> mTexture3D,
-				CComPtr<ID3D11ShaderResourceView> mSRV) :
-				D3D11Texture(mFactory),
-				mTexture3D(mTexture3D),
-				mSRV(mSRV) {}
+			D3D11Texture3D(D3D11Context* mContext) : D3D11Texture(mContext) {}
 		public:
 		};
 	}

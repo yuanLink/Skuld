@@ -50,6 +50,13 @@ namespace Skuld
 			{
 			}
 			virtual void LoadAssets(Storage::Asset *mAsset);
+
+			virtual void LoadEffect(Effect* mEffect) {
+				CheckFlags mFlags = GetCurrentCheckFlags(mEngine);
+				if (!IsCheckFlagsAvaliable(mFlags, mEffect->GetShaderType())) throw Exception("Shader不能用于当前程序");
+
+				mEffectSelector.SetEffect(mEffect);
+			}
 		};
 
 		Engine3D * Engine3D::Create3DEngine(SkuldEngine* mEngine, UI::Displayable* mDisplayable)

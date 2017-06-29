@@ -30,10 +30,17 @@ namespace Skuld
 			this->ptr->AddRef();
 		}
 		Ptr(V* _ptr) : ptr(_ptr) { }
-		V* Detach(V* d = nullptr) {
+		void Attach(V* v) {
+			if (ptr) ptr->Dispose();
+			ptr = v;
+		}
+		V* Detach() {
 			V* v = ptr;
-			ptr = d;
+			ptr = nullptr;
 			return v;
+		}
+		V** operator&() {
+			return &ptr;
 		}
 		Ptr<V>& operator=(const Ptr<V>& m) {
 			if (m.ptr) m.ptr->AddRef();

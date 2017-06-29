@@ -53,7 +53,7 @@ namespace Skuld
 
 			if (mPixelFormat == PixelFormat_RGBA_8888)
 			{
-				mTemp.Detach(bmp->Convert(PixelFormat_BGRA_8888));
+				mTemp.Attach(bmp->Convert(PixelFormat_BGRA_8888));
 				mBuffer = mTemp->GetPixels();
 				mStride = bmp->GetWidth() * 4;
 			}
@@ -64,7 +64,7 @@ namespace Skuld
 			}
 			else if (mPixelFormat == PixelFormat_RGB_888)
 			{
-				mTemp.Detach(bmp->Convert(PixelFormat_BGR_888));
+				mTemp.Attach(bmp->Convert(PixelFormat_BGR_888));
 				mBuffer = mTemp->GetPixels();
 				mStride = bmp->GetWidth() * 3;
 			}
@@ -75,7 +75,7 @@ namespace Skuld
 			}
 			else if (mPixelFormat == PixelFormat_RGB_565)
 			{
-				mTemp.Detach(bmp->Convert(PixelFormat_ARGB_1555));
+				mTemp.Attach(bmp->Convert(PixelFormat_ARGB_1555));
 				mBuffer = mTemp->GetPixels();
 				mStride = bmp->GetWidth() * 2;
 			}

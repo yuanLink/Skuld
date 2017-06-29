@@ -54,10 +54,35 @@ namespace Skuld
 			return (this->mFlag & (~mFlag.mFlag));
 		}
 		CheckFlags SetAllPlatform() const {
-			return (this->mFlag & 0x1FFF);
+			return (this->mFlag | 0x00001FFF);
+		}
+		CheckFlags SetAllRender3DAPI() const {
+			return (this->mFlag | 0x0FC00000);
+		}
+		CheckFlags SetAllRender2DAPI() const {
+			return (this->mFlag | 0x003E0000);
+		}
+		CheckFlags SetAllAudioAPI() const {
+			return (this->mFlag | 0x0000E000);
 		}
 		CheckFlags SetAllArch() const {
-			return this->mFlag & 0xF0000000;
+			return (this->mFlag | 0xF0000000);
+		}
+
+		CheckFlags UnsetAllPlatform() const {
+			return (this->mFlag & 0xFFFFE000);
+		}
+		CheckFlags UnsetAllRender3DAPI() const {
+			return (this->mFlag & 0xF03FFFFF);
+		}
+		CheckFlags UnsetAllRender2DAPI() const {
+			return (this->mFlag & 0xFFC1FFFF);
+		}
+		CheckFlags UnsetAllAudioAPI() const {
+			return (this->mFlag & 0xFFFF1FFF);
+		}
+		CheckFlags UnsetAllArch() const {
+			return (this->mFlag & 0x0FFFFFFF);
 		}
 	};
 

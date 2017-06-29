@@ -1,16 +1,17 @@
 #include "D3D11Texture3D.h"
 
 #include "D3D11Utility.h"
+#include "D3D11Context.h"
 
 namespace Skuld
 {
 	namespace Render3D
 	{
-		D3D11Texture3D * D3D11Texture3D::Create(CComPtr<ID3D11Device> mDevice, const D3D11Factory* mFactory,
-			const uint8_t * mPixels, uint32_t mWidth, uint32_t mHeight, uint32_t mDepth, PixelFormat mPixelFormat)
+		D3D11Texture3D * D3D11Texture3D::Create(D3D11Context* mContext,
+			const uint8_t * mPixels, uint32_t mWidth, uint32_t mHeight, uint32_t mDepth,
+			PixelFormat mPixelFormat, AccessFlag mAccess, TextureBindFlag mBind)
 		{
-			CComPtr<ID3D11Texture3D> mTexture3D;
-			CComPtr<ID3D11ShaderResourceView> mSRV;
+			Ptr<D3D11Texture3D> mRet = new D3D11Texture3D(mContext);
 			D3D11_TEXTURE3D_DESC mDesc;
 			memset(&mDesc, 0, sizeof(mDesc));
 			mDesc.Height = static_cast<UINT>(mHeight);
@@ -19,23 +20,35 @@ namespace Skuld
 			mDesc.Format = PixelFormatToDXGIFormat(mPixelFormat);
 
 			mDesc.MipLevels = 1;
-			mDesc.Usage = D3D11_USAGE_IMMUTABLE;
-			mDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
+			mDesc.Usage = AccessFlagToUsage(mAccess);
+
+			if (mDesc.Usage == D3D11_USAGE_STAGING)
+			{
+				if (mAccess & Access_CPURead) mDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_READ;
+				if (mAccess & Access_CPUWrite) mDesc.CPUAccessFlags |= D3D11_CPU_ACCESS_WRITE;
+			}
+			mDesc.BindFlags = TextureBindFlagToD3D11BindFlag(mBind);
+
+			std::unique_ptr<D3D11_SUBRESOURCE_DATA> mInitialData = nullptr;
 			if (mPixels != nullptr)
 			{
-				D3D11_SUBRESOURCE_DATA mInitialData;
-				memset(&mInitialData, 0, sizeof(mInitialData));
+				mInitialData = std::make_unique<D3D11_SUBRESOURCE_DATA>();
+				memset(mInitialData.get(), 0, sizeof(D3D11_SUBRESOURCE_DATA));
 
-				mInitialData.pSysMem = mPixels;
-				mInitialData.SysMemPitch = PixelFormatDepth(mPixelFormat) * mWidth;
-				mDevice->CreateTexture3D(&mDesc, &mInitialData, &mTexture3D);
+				mInitialData->pSysMem = mPixels;
+				mInitialData->SysMemPitch = PixelFormatDepth(mPixelFormat) / 8 * mWidth;
+				mInitialData->SysMemSlicePitch = mInitialData->SysMemPitch * mHeight;
 			}
-			else mDevice->CreateTexture3D(&mDesc, nullptr, &mTexture3D);
+			HRESULT hr = mContext->D3DDevice()->CreateTexture3D(&mDesc, mInitialData.get(), &mRet->mTexture3D);
 
-			mDevice->CreateShaderResourceView(mTexture3D, nullptr, &mSRV);
+			RETURN_NULL_IF_FAILED(hr);
 
-			return new D3D11Texture3D(mFactory, mTexture3D, mSRV);
+			if (mBind & TextureBind_ShaderResource)
+				RETURN_NULL_IF_FAILED(mContext->D3DDevice()->CreateShaderResourceView(mRet->mTexture3D,
+					nullptr, &mRet->mSRV));
+
+			return mRet.Detach();
 		}
 	}
 }

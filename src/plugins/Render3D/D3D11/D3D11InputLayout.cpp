@@ -11,15 +11,15 @@ namespace Skuld
 	namespace Render3D
 	{
 		D3D11InputLayout * D3D11InputLayout::CreateD3D11InputLayout(const ShaderInputLayoutAttri * mAttri,
-			size_t mSize, Shader * mShader, CComPtr<ID3D11Device> mDevice, const D3D11Factory * mFactory)
+			size_t mSize, ShaderObject * mShader, D3D11Context* mContext)
 		{
-			CComPtr<ID3D11InputLayout> mInputLayout;
+			Ptr<D3D11InputLayout> mRet = new D3D11InputLayout(mContext);
 			std::unique_ptr<D3D11_INPUT_ELEMENT_DESC[]> mDesc = std::make_unique<D3D11_INPUT_ELEMENT_DESC[]>(mSize);
 			memset(mDesc.get(), 0, sizeof(D3D11_INPUT_ELEMENT_DESC) * mSize);
 
 			std::vector<std::vector<char> > mAutoRelease(mSize);
 			UINT mOffset = 0;
-			for (size_t i = 0; i > mSize; i++)
+			for (size_t i = 0; i < mSize; i++)
 			{
 				std::string mName = mAttri[i].mName.GetStr();
 				mAutoRelease[i].resize(mName.size() + 1);
@@ -39,14 +39,14 @@ namespace Skuld
 				mDesc[i].AlignedByteOffset = mOffset;
 			}
 
-			RETURN_NULL_IF_FAILED(mDevice->CreateInputLayout(mDesc.get(), static_cast<UINT>(mSize),
-				mShader->GetCode(), static_cast<SIZE_T>(mShader->GetCodeSize()), &mInputLayout));
+			RETURN_NULL_IF_FAILED(mContext->D3DDevice()->CreateInputLayout(mDesc.get(), static_cast<UINT>(mSize),
+				mShader->GetCode(), static_cast<SIZE_T>(mShader->GetCodeSize()), &mRet->mInputLayout));
 
-			return new D3D11InputLayout(mInputLayout, mFactory);
+			return mRet.Detach();
 		}
 		const Render3DFactory * D3D11InputLayout::GetFactory() const
 		{
-			return mFactory;
+			return mContext->GetFactory();
 		}
 	}
 }

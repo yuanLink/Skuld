@@ -34,7 +34,7 @@ namespace Skuld
 				if (header.tImageParams.iBits == 16) mPixelFormat = PixelFormat_ARGB_1555;
 				else if (header.tImageParams.iBits == 24) mPixelFormat = PixelFormat_BGR_888;
 
-				ret.Detach(Bitmap::CreateBitmap(
+				ret.Attach(Bitmap::CreateBitmap(
 					static_cast<uint32_t>(header.tImageParams.iWidth),
 					static_cast<uint32_t>(header.tImageParams.iHeight),
 					mPixelFormat
@@ -51,7 +51,7 @@ namespace Skuld
 				if (header.tImageParams.iBits == 16) mPixelFormat = PixelFormat_ARGB_1555;
 				else if (header.tImageParams.iBits == 24) mPixelFormat = PixelFormat_BGR_888;
 
-				ret.Detach(Bitmap::CreateBitmap(
+				ret.Attach(Bitmap::CreateBitmap(
 					static_cast<uint32_t>(header.tImageParams.iWidth),
 					static_cast<uint32_t>(header.tImageParams.iHeight),
 					mPixelFormat

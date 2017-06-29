@@ -69,6 +69,8 @@ binary_to_header(${CMAKE_CURRENT_SOURCE_DIR}/licenses/jsoncpp_license.txt
 	${SKULD_INTERNAL_INCLUDE_DIR}/License/jsoncpp_license.h jsoncpp_license)
 binary_to_header(${CMAKE_CURRENT_SOURCE_DIR}/licenses/jpeg_license.txt 
 	${SKULD_INTERNAL_INCLUDE_DIR}/License/jpeg_license.h jpeg_license)
+binary_to_header(${CMAKE_CURRENT_SOURCE_DIR}/licenses/SPIRV_Cross_license.txt 
+	${SKULD_INTERNAL_INCLUDE_DIR}/License/SPIRV_Cross_license.h SPIRV_Cross_license)
 
 add_subdirectory(third_party)
 add_subdirectory(src)

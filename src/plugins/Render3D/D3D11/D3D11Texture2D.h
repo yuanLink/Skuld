@@ -9,17 +9,17 @@ namespace Skuld
 		protected:
 			virtual ~D3D11Texture2D() {}
 			CComPtr<ID3D11Texture2D> mTexture2D;
-			CComPtr<ID3D11ShaderResourceView> mSRV;
 
+#ifdef __d3d11_3_h__
+			CComPtr<ID3D11Texture2D1> mTexture2D1;
+#endif
+			friend class D3D11Texture2DHelper;
 			friend class D3D11Context;
-			static D3D11Texture2D* Create(CComPtr<ID3D11Device> mDevice, const D3D11Factory* mFactory,
-				const uint8_t * mPixels, uint32_t mWidth, uint32_t mHeight, PixelFormat mPixelFormat);
+			static D3D11Texture2D* Create(D3D11Context* mContext,
+				const uint8_t * mPixels, uint32_t mWidth, uint32_t mHeight,
+				PixelFormat mPixelFormat, AccessFlag mAccess, TextureBindFlag mBind);
 
-			D3D11Texture2D(const D3D11Factory* mFactory, CComPtr<ID3D11Texture2D> mTexture2D,
-				CComPtr<ID3D11ShaderResourceView> mSRV) :
-				D3D11Texture(mFactory),
-				mTexture2D(mTexture2D),
-				mSRV(mSRV) {}
+			D3D11Texture2D(D3D11Context* mContext) : D3D11Texture(mContext) {}
 		public:
 		};
 	}

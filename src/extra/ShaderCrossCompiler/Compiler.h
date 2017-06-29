@@ -15,11 +15,9 @@ namespace Skuld
 		public:
 			std::string mWarning;
 
-			std::string mEntry;
-			std::string mProfile;
-
 			virtual Extra::ShaderBinaryFormat Format() = 0;
-			virtual bool Compile(const char* mSrc, std::vector<uint8_t>& mDst) = 0;
+			virtual bool Compile(const char* mSrc, std::vector<uint8_t>& mDst,
+				Render3D::ShaderType mProfile, const char* mMain) = 0;
 		};
 	}
 }

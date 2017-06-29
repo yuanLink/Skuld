@@ -3,14 +3,14 @@
 
 namespace Skuld
 {
-	class SKULD_EXPORT MemoryStream : public Stream
+	class MemoryStream : public Stream
 	{
 	protected:
 		virtual ~MemoryStream();
 	private:
 		MemoryStream();
-		MemoryStream(const MemoryStream&&);
-		MemoryStream& operator=(const MemoryStream&);
+		MemoryStream(const MemoryStream&) = delete;
+		MemoryStream& operator=(const MemoryStream&) = delete;
 		uint8_t* mem;
 		size_t size;
 		size_t real_size;
@@ -18,8 +18,8 @@ namespace Skuld
 		bool delete_mem;
 		bool can_write;
 	public:
-		size_t GetTotalSpace();
-		const void* GetMemoryAddress() const;
+		virtual size_t GetTotalSpace();
+		virtual const void* GetMemoryAddress() const;
 		static MemoryStream* Open(uint8_t* buffer, size_t size, bool delete_when_close = true);
 		static MemoryStream* Open(size_t size);
 		size_t Read(void* buffer, size_t size);

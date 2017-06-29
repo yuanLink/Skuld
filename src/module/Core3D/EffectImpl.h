@@ -33,7 +33,9 @@ namespace Skuld
 			std::map<String, std::vector<uint8_t> > mShaderName;
 			std::vector<EachEffect> mEffect;
 
-			String mEffectFlag;
+			Extra::ShaderBinaryFormat mFormat;
+
+			virtual CheckFlags GetShaderType() const;
 
 			virtual const uint8_t* GetShader(const String& str) const;
 			virtual size_t GetShaderSize(const String& str) const;

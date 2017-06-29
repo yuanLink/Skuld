@@ -7,8 +7,8 @@ add_plugin(Render3D D3D11
 	D3D11Context.h
 	D3D11InputLayout.cpp
 	D3D11InputLayout.h
-	D3D11Shader.cpp
-	D3D11Shader.h
+	D3D11ShaderObject.cpp
+	D3D11ShaderObject.h
 	D3D11Texture1D.cpp
 	D3D11Texture1D.h
 	D3D11Texture2D.cpp
@@ -25,6 +25,8 @@ add_plugin(Render3D D3D11
 	D3D11BufferObject.h
 	D3D11FrameBufferObject.cpp
 	D3D11FrameBufferObject.h
+	D3D11SamplerObject.cpp
+	D3D11SamplerObject.h
 )
-
+ 
 endif()

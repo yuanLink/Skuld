@@ -20,6 +20,13 @@ int main()
 		Ptr<Displayable> mDis = Displayable::Create(300, 300);
 
 		Ptr<Engine3D> mEng = Engine3D::Create3DEngine(mSkuldEngine, mDis);
+		Ptr<Effect> mEffect = Effect::CompileFromFile(
+			SKULD_BUILD_DIR "/../../resources/HLSL.hlsl",
+			SKULD_BUILD_DIR "/../../resources/EffectScript.json",
+			Extra::ShaderBinaryFormat_DXBC
+		);
+		mEng->LoadEffect(mEffect);
+		
 		while (!mDis->MainLoop());
 	}
 

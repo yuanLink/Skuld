@@ -4,6 +4,11 @@
 
 namespace Skuld
 {
+	const void* GetPluginEntry(const SkuldEngine* mEngine, PluginType mType)
+	{
+		return mEngine->mEntry[mType];
+	}
+
 	SkuldEngine* CreateEngine()
 	{ 
 		SkuldEngine* ret = new (std::nothrow) SkuldEngine();
@@ -40,11 +45,12 @@ namespace Skuld
 			handle->CreateRender3DFactory = (CreateRender3DFactoryFunc*)entry;
 			break;
 		case tAudio:
-			handle->CreateAudioDevice = (CreateAudioDeviceFunc*)entry;
+			handle->CreateAudioFactory = (CreateAudioFactoryFunc*)entry;
 			break;
 		default:
 			return nullptr;
 		}
+		handle->mEntry[mType] = entry;
 		return entry;
 	}
 	
@@ -102,7 +108,7 @@ namespace Skuld
 			engine->CreateRender3DFactory = nullptr;
 			break;
 		case tAudio:
-			engine->CreateAudioDevice = nullptr;
+			engine->CreateAudioFactory = nullptr;
 			break;
 		default:
 			break;

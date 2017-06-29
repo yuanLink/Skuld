@@ -1,8 +1,13 @@
 {
-  "EffectTest1": {
-
-  },
-  "EffectTest2": {
-
+  "Ð§¹û1": {
+    "VertexShader": "vs_main",
+    "PixelShader": "ps_main",
+    "VertexLayout": {
+      "POSITION": {
+        "Type": "float",
+        "Size": 4,
+        "Slot": 0
+      }
+    }
   }
 }

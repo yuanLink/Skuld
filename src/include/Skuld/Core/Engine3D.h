@@ -4,6 +4,7 @@
 #include "../UI/UI.h"
 #include "../UI/Displayable.h"
 #include "../Plugin.h"
+#include "Effect.h"
 
 namespace Skuld
 {
@@ -16,6 +17,7 @@ namespace Skuld
 		public:
 			static SKULD_EXPORT Engine3D* Create3DEngine(SkuldEngine* mEngine,
 				UI::Displayable* mDisplayable);
+			virtual void LoadEffect(Effect* mEffect) = 0;
 		};
 	}
 }
