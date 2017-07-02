@@ -26,6 +26,9 @@
 
 namespace Skuld
 {
+	typedef float4 vec; ///TODO: 此处应替换成SIMD的Vector类型
+	typedef const vec vec_f;
+
 	std::ostream& operator<<(std::ostream& stream, const float2& f);
 	std::ostream& operator<<(std::ostream& stream, const float4& f);
 	std::ostream& operator<<(std::ostream& stream, const float3& f);
@@ -38,56 +41,6 @@ namespace Skuld
 	std::ostream& operator<<(std::ostream& stream, const uint4& f);
 	std::ostream& operator<<(std::ostream& stream, const uint3& f);
 	
-#if defined(MATH_USE_SIMD)
-#	if defined(SIMD_NEON)
-#		ifdef __GNUC__
-	typedef union _vec {
-		float32x4_t f;
-		uint32x4_t u;
-		uint8x16_t b;
-		uint8x8x2_t ba2;
-		uint16x4x2_t sa2;
-		_vec() {}
-		_vec(uint8x8x2_t ba2) :ba2(ba2) {}
-		_vec(float32x4_t f) : f(f) {}
-		_vec(uint16x4x2_t sa2) : sa2(sa2) {}
-		_vec(uint32x4_t u) : u(u) {}
-	} vec;
-#		else
-	typedef union _vec {
-		float32x4_t f;
-		uint32x4_t u;
-		uint8x16_t b;
-		uint8x8x2_t ba2;
-		uint16x4x2_t sa2;
-		_vec() {}
-		_vec(float32x4_t f) : f(f) {}
-		_vec(uint8x8x2_t ba2) :ba2(ba2) {}
-	} vec;
-#		endif
-#	else
-#		ifdef __GNUC__ 
-	typedef struct _vec
-	{
-		__m128 v;
-		_vec(__m128 v) :v(v) {}
-		operator __m128() const { return v; }
-	} vec;
-#		else
-	typedef __m128 vec;
-#		endif
-#	endif
-	typedef const vec vec_f;
-#else
-	typedef union
-	{
-		float f[4];
-		uint u[4];
-		int i[4];
-	} vec;
-	typedef const vec& vec_f;
-#endif
-
 	class MATH_ALIGN(16) matrix
 	{
 	private:

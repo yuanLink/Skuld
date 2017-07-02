@@ -17,7 +17,6 @@ cbuffer TransformMatrix : register(b1)
 struct PixelShaderInput
 {
 	float4 Pos : SV_POSITION;
-	float2 UV : PS_TEXCOORD;
 };
 
 struct BufferStruct
@@ -30,9 +29,7 @@ RWStructuredBuffer<BufferStruct> g_OutBuff;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-PixelShaderInput vs_main(
-	float4 Position : POSITION
-	)
+PixelShaderInput vs_main(float4 Position : POSITION)
 {
 	PixelShaderInput ret;
 	ret.Pos = mul(gProjection, mul(gView, mul(gWorld, Position)));

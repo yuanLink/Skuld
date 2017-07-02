@@ -11,6 +11,10 @@ namespace Skuld
 	}
 }
 
+#ifdef SKULD_BUILD_DYNAMIC
+
 extern "C" Skuld::CreateAudioFactoryFunc* GetAudioFactoryEntry() {
 	return Skuld::Audio::CreateAudio_XAudio2Factory;
 }
+
+#endif

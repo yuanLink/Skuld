@@ -7,7 +7,6 @@
 #		SKULD_IOS
 #		SKULD_UWP
 #		SKULD_MAC
-#		SKULD_WINPHONE
 #
 #	Compiler:
 #		SKULD_GCC_LIKE
@@ -77,7 +76,6 @@ set(SKULD_ANDROID off)
 set(SKULD_IOS off)
 set(SKULD_UWP off)
 set(SKULD_MAC off)
-set(SKULD_WINPHONE off)
 
 set(SKULD_GCC_LIKE off)
 
@@ -388,9 +386,8 @@ function(add_plugin plugin_type plugin_id)
 	set(plugin_name ${plugin_type}_${plugin_id})
 	set(plugin_src ${ARGV})
 	list(REMOVE_AT plugin_src 0 1)
-	list(APPEND plugin_src ${SKULD_SDK_DIR}/${plugin_type}.cpp)
 
-	add_library(${plugin_name} SHARED ${plugin_src})
+	add_library(${plugin_name} SHARED ${plugin_src} ${SKULD_SDK_DIR}/${plugin_type}.cpp)
 	add_dependencies(${plugin_name} CoreStatic)
 	target_link_libraries(${plugin_name} CoreStatic)
 	target_compile_definitions(${plugin_name} PRIVATE SKULD_BUILD_DYNAMIC SKULD_PLUGIN)

@@ -17,7 +17,7 @@ namespace Skuld
 {
 	namespace Render3D
 	{
-		BufferObject * D3D11Context::CreateBufferObject(const uint8_t * mData, size_t mBufferSize, 
+		BufferObject * D3D11Context::CreateBufferObject(const void * mData, size_t mBufferSize, 
 			AccessFlag mAccess, BufferBindFlag mBind)
 		{
 			return D3D11BufferObject::Create(this, mData, mBufferSize, mAccess, mBind);
@@ -145,6 +145,11 @@ namespace Skuld
 
 			D3D11InputLayout* mD3D11InputLayout = static_cast<D3D11InputLayout*>(mInputLayout);
 			mContext->IASetInputLayout(mD3D11InputLayout->mInputLayout);
+		}
+
+		void D3D11Context::DoRender()
+		{
+			mContext->DrawIndexed(3, 0, 0);
 		}
 
 		ShaderObject * D3D11Context::CreateShader(const uint8_t * mCode, size_t mCodeSize, ShaderType mType)

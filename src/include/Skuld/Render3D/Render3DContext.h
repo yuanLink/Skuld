@@ -74,7 +74,9 @@ namespace Skuld
 
 			virtual const Render3DFactory* GetFactory() const = 0;
 
-			virtual BufferObject* CreateBufferObject(const uint8_t* mData, size_t mBufferSize,
+			virtual void DoRender() = 0;
+
+			virtual BufferObject* CreateBufferObject(const void* mData, size_t mBufferSize,
 				AccessFlag mAccess, BufferBindFlag mBind) = 0;
 			virtual Texture* CreateTexture1D(const uint8_t * mPixels, uint32_t mWidth,
 				PixelFormat mPixelFormat, AccessFlag mAccess, TextureBindFlag mBind) = 0;

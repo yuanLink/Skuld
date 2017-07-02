@@ -12,6 +12,7 @@ namespace Skuld
 			virtual ~BufferObject() {}
 		public:
 			virtual const Render3DFactory* GetFactory() const = 0;
+			virtual void Update(const void* mBuffer, size_t mBufferSize) = 0;
 		};
 	}
 }

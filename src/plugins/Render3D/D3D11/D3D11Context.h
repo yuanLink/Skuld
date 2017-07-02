@@ -18,6 +18,9 @@ namespace Skuld
 			D3D_DRIVER_TYPE mDriverType;
 			D3D_FEATURE_LEVEL mFeatureLevel;
 			CComPtr<ID3D11Device> mDevice;
+			CComPtr<ID3D11DeviceContext> mContext;
+			CComPtr<IDXGISwapChain> mSwapChain;
+			Ptr<D3D11FrameBufferObject> mFBO;
 #ifdef __d3d11_1_h__
 		protected:
 			CComPtr<ID3D11Device1> mDevice1;
@@ -52,10 +55,7 @@ namespace Skuld
 			inline ID3D11Device4* D3DDevice4() { return mDevice4; }
 			inline ID3D11Device5* D3DDevice5() { return mDevice5; }
 #endif
-
-			CComPtr<ID3D11DeviceContext> mContext;
-			CComPtr<IDXGISwapChain> mSwapChain;
-			Ptr<D3D11FrameBufferObject> mFBO;
+		protected:
 
 			friend class D3D11Factory;
 			D3D11Context(const D3D11Factory* mFactory,
@@ -72,21 +72,28 @@ namespace Skuld
 				mContext(mContext),
 				mSwapChain(mSwapChain)
 			{
+#ifdef __d3d11_1_h__
 				mDevice->QueryInterface(&mDevice1);
-				mDevice->QueryInterface(&mDevice2);
-				mDevice->QueryInterface(&mDevice3);
-				mDevice->QueryInterface(&mDevice4);
-				mDevice->QueryInterface(&mDevice5);
-
 				mContext->QueryInterface(&mContext1);
+#endif
+#ifdef __d3d11_2_h__
+				mDevice->QueryInterface(&mDevice2);
 				mContext->QueryInterface(&mContext2);
+#endif
+#ifdef __d3d11_3_h__
+				mDevice->QueryInterface(&mDevice3);
 				mContext->QueryInterface(&mContext3);
 				mContext->QueryInterface(&mContext4);
+#endif
+#ifdef __d3d11_4_h__
+				mDevice->QueryInterface(&mDevice4);
+				mDevice->QueryInterface(&mDevice5);
+#endif
 			}
 		public:
 			virtual const Render3DFactory* GetFactory() const;
 
-			virtual BufferObject* CreateBufferObject(const uint8_t* mData, size_t mBufferSize, AccessFlag mAccess, BufferBindFlag mBind);
+			virtual BufferObject* CreateBufferObject(const void* mData, size_t mBufferSize, AccessFlag mAccess, BufferBindFlag mBind);
 			virtual ShaderObject* CreateShader(const uint8_t* mCode, size_t mCodeSize, ShaderType mType);
 			virtual InputLayout* CreateInputLayout(const ShaderInputLayoutAttri* mAttri, size_t mSize, ShaderObject* mShader);
 			virtual Texture* CreateTexture1D(const uint8_t * mPixels, uint32_t mWidth,
@@ -100,6 +107,8 @@ namespace Skuld
 			virtual void SetVertexBuffer(BufferObject** mBufferObject, const size_t* mStrides, size_t mCount);
 			virtual void SetIndexBuffer(BufferObject* mBufferObject, size_t mStride);
 			virtual void SetInputLayout(InputLayout* mInputLayout);
+
+			virtual void DoRender();
 
 			inline ID3D11Device* D3DDevice() { return mDevice; }
 			inline ID3D11DeviceContext* D3DContext() { return mContext; }

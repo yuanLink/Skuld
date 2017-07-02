@@ -20,11 +20,12 @@ namespace Skuld
 			friend class D3D11Context;
 
 			static D3D11BufferObject* Create(D3D11Context* mContext,
-				const uint8_t* mBufferData, size_t mBufferSize, AccessFlag mAccess, BufferBindFlag mBind);
+				const void* mBufferData, size_t mBufferSize, AccessFlag mAccess, BufferBindFlag mBind);
 			
 			D3D11BufferObject(D3D11Context* mContext) : mContext(mContext) {}
 		public:
 			const Render3DFactory* GetFactory() const;
+			void Update(const void* mBuffer, size_t mSize);
 		};
 	}
 }

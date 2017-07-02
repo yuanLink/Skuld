@@ -9,7 +9,7 @@ namespace Skuld
 {
 	namespace Render3D
 	{
-		static Render3DFactory* CreateRender3D_D3D11Factory()
+		Render3DFactory* D3D11Factory::CreateRender3D_D3D11Factory()
 		{
 			return new (std::nothrow) D3D11Factory();
 		}
@@ -88,6 +88,10 @@ namespace Skuld
 	}
 }
 
+#ifdef SKULD_BUILD_DYNAMIC
+
 extern "C" Skuld::CreateRender3DFactoryFunc* GetRender3DFactoryEntry() { 
-	return Skuld::Render3D::CreateRender3D_D3D11Factory;
+	return Skuld::Render3D::D3D11Factory::CreateRender3D_D3D11Factory;
 }
+
+#endif

@@ -19,6 +19,8 @@ namespace Skuld
 		public:
 			Render3DContext* CreateContext(const WindowInfo* mInfo, const Config* mConfig) const;
 			CheckFlags GetCheckFlag() const { return AvaliableRender3DAPI_D3D11; }
+
+			static Render3DFactory* CreateRender3D_D3D11Factory();
 		};
 	}
 }

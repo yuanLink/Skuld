@@ -1,13 +1,14 @@
 #include "D3D11BufferObject.h"
 #include "D3D11Utility.h"
 #include "D3D11Context.h"
+#include <Skuld/Exception.h>
 
 namespace Skuld
 {
 	namespace Render3D
 	{
 		D3D11BufferObject * D3D11BufferObject::Create(D3D11Context* mContext,
-			const uint8_t* mBufferData, size_t mBufferSize, AccessFlag mAccess, BufferBindFlag mBind)
+			const void* mBufferData, size_t mBufferSize, AccessFlag mAccess, BufferBindFlag mBind)
 		{
 			Ptr<D3D11BufferObject> mRet = new D3D11BufferObject(mContext);
 
@@ -43,6 +44,26 @@ namespace Skuld
 		const Render3DFactory * D3D11BufferObject::GetFactory() const
 		{
 			return mContext->GetFactory();
+		}
+
+		void D3D11BufferObject::Update(const void* mBuffer, size_t mBufferSize)
+		{
+			D3D11_BUFFER_DESC mDesc;
+			this->mBuffer->GetDesc(&mDesc);
+			if (mBufferSize > mDesc.ByteWidth) throw Exception("Too large buffer");
+
+			if (mDesc.Usage != D3D11_USAGE_IMMUTABLE || mDesc.Usage != D3D11_USAGE_DYNAMIC)
+				mContext->D3DContext()->UpdateSubresource(this->mBuffer, 0, nullptr, mBuffer, 
+					static_cast<UINT>(mBufferSize), 0);
+			else
+			{
+				D3D11_MAPPED_SUBRESOURCE mResource;
+				mContext->D3DContext()->Map(this->mBuffer, 0, D3D11_MAP_READ_WRITE, 0, &mResource);
+
+				memcpy(mResource.pData, mBuffer, mBufferSize);
+
+				mContext->D3DContext()->Unmap(this->mBuffer, 0);
+			}
 		}
 	}
 }

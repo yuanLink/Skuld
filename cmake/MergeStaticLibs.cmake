@@ -66,7 +66,7 @@ function(merge_static_libs output_library)
 	get_target_property(outfile ${output_target} LOCATION)
 
 	add_custom_command(TARGET ${output_target} POST_BUILD
-			COMMAND python ${SKULD_UTILS_DIR}/unix/prepare_libs.py ${CMAKE_AR} ${outfile} ${libfiles}
+			COMMAND python ${SKULD_UTILS_DIR}/MergeStaticLibs/PrepareLibs.py ${CMAKE_AR} ${outfile} ${libfiles}
 			COMMAND ${CMAKE_RANLIB} ${outfile})
   endif()
 endfunction()
